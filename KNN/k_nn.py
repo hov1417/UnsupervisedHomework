@@ -1,8 +1,10 @@
 import numpy as np
 from collections import Counter
 
-def dist(a, b)
-    return np.sum(np.square(a-b))
+
+def dist(a, b):
+    return np.sum(np.square(a - b))
+
 
 class K_NN:
     def __init__(self, k):
@@ -22,15 +24,18 @@ class K_NN:
         :param data: 2D array of floats N points each D dimensions
         :return: array of integers
         """
-        res=[]
+        res = []
         for x in X:
             dists = []
             for i in range(self.data.shape[0]):
                 for d in self.data[i]:
                     dists.append((dist(d, x), i))
             nearests = [a[1] for a in sorted(dists)[:self.k]]
-            
+
             counts = dict(Counter(nearests))
-            print(counts)
-#             res.append(
-        return 0
+            m = max(counts.values())
+            for k in counts:
+                if counts[k] == m:
+                    res.append(k)
+                    break
+        return res
