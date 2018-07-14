@@ -48,6 +48,8 @@ class KMeansPlusPlus(KMeans):
         for i in range(self.k-1):
             dists = np.ones(data.shape[0])
             for m in self.means:
+                print(m.shape)
+                print(data.shape)
                 dists = np.minimum(dist(m, data), dists)
             self.means.append(data[np.random.choice(data.shape[0], p=dists/dists.sum())])
         self.means = np.asarray(self.means)
