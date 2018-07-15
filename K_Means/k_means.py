@@ -1,7 +1,7 @@
 import numpy as np
 
 def dist(a, b):
-    return np.sum(np.square(a - b), axis=1)
+    return np.sum(np.square(a - b), axis=-1)
 
 class KMeans:
     def __init__(self, k):
@@ -12,10 +12,12 @@ class KMeans:
         :param data: numpy array of shape (k, ..., dims)
         """
         self.dim = data.shape[-1]
+        data = self.changeDims(data)
         self._initialize_means(data)
         
+        
         labels, _ = self.predict(data)
-        new_means = [data[labels == i].mean(axis=0) for i in range(self.k)]
+        new_means = np.array([data[labels == i].mean(axis=0) for i in range(self.k)])
         
         while dist(self.means, new_means).sum() > eps:
             self.means = new_means
@@ -24,6 +26,9 @@ class KMeans:
 
     def _initialize_means(self, data):
         self.means = data[np.random.choice(data.shape[0], self.k)]
+        
+    def changeDims(self, data):
+        return data.reshape([np.prod(data.shape[:-1]), self.dim])
 
     def predict(self, data):
         """
@@ -31,6 +36,7 @@ class KMeans:
         :return: labels of each datapoint and it's mean
                  0 <= labels[i] <= k - 1
         """
+        data = self.changeDims(data)
         distances = np.inf * np.ones(data.shape[0])
         labels = - np.ones(data.shape[0])
         
@@ -40,7 +46,7 @@ class KMeans:
             labels[mask] = i
             distances[mask] = cur_dists[mask]
         
-        return labels,self.means
+        return labels, self.means
 
 class KMeansPlusPlus(KMeans):
     def _initialize_means(self, data):
@@ -48,8 +54,6 @@ class KMeansPlusPlus(KMeans):
         for i in range(self.k-1):
             dists = np.ones(data.shape[0])
             for m in self.means:
-                print(m.shape)
-                print(data.shape)
                 dists = np.minimum(dist(m, data), dists)
             self.means.append(data[np.random.choice(data.shape[0], p=dists/dists.sum())])
         self.means = np.asarray(self.means)
