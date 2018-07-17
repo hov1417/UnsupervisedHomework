@@ -27,7 +27,7 @@ def get_ellipse_from_covariance(matrix, std_multiplier=2):
 
 def main(args):
     df = pd.read_csv(args.data)
-    data = np.array(df[['X', 'Y']])
+    data = np.array(df[['X', 'Y']])/100000
     plt.clf()
     plt.scatter(data[:, 0], data[:, 1], s=3, color='blue')
 
@@ -44,7 +44,7 @@ def main(args):
         e.set_alpha(np.power(pi[k], .3))
         e.set_facecolor('red')
         plt.axes().add_artist(e)
-    plt.savefig('covariances_{}_{}'.format(args.data, args.name))
+    plt.savefig('covariances_{}_{}'.format(args.data, args.name).replace('.','_'))
     plt.show()
 
 
