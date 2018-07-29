@@ -1,11 +1,8 @@
 import numpy as np
 
-
 class PCA:
     def __init__(self, k):
         self.k = k
-        self.location_ = None
-        self.matrix_ = None
 
     def fit(self, data):
         """
@@ -13,7 +10,15 @@ class PCA:
         :param data: data of shape (number of samples, number of features)
         HINT! use SVD
         """
-        pass
+        Data = np.asarray(data)
+        self.location_ = Data.mean(axis=0)
+        Data -= self.location_ 
+        u,s,v = np.linalg.svd(Data)
+        indexes = s.argsort()[-self.k:][::-1]
+        self.basis = v[indexes]
+        
+    def getBasis(self):
+        return self.basis
 
     def transform(self, data):
         """
@@ -23,6 +28,5 @@ class PCA:
         on linear space from A's rows as basis
         :param data: data of shape (number of samples, number of features)
         """
-        # Lemma: x is vector and A dot A.T == I, then x's coordinates in Linear Space(A's rows as basis)
-        # is A dot x
-        return np.ones((len(data), self.k))
+        Data = np.asarray(data - self.location_)
+        return self.basis * Data.T
