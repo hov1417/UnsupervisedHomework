@@ -10,7 +10,7 @@ class PCA:
         :param data: data of shape (number of samples, number of features)
         HINT! use SVD
         """
-        Data = np.asarray(data)
+        Data = np.array(data)
         self.location_ = Data.mean(axis=0)
         Data -= self.location_ 
         u,s,v = np.linalg.svd(Data)
@@ -29,4 +29,8 @@ class PCA:
         :param data: data of shape (number of samples, number of features)
         """
         Data = np.asarray(data - self.location_)
-        return self.basis * Data.T
+        return Data.dot(self.basis.T)
+    
+    def inverseTransform(self, alphas):
+        return alphas.dot(self.basis) + self.location_
+        
